@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GithubRepoExplorer</string>
+    <string name="txt_repositories">Repositories</string>
+    <string name="txt_visible">This repo is visible</string>
+    <string name="txt_hidden">This repo is hidden</string>
+    <string name="txt_private">This repo is private</string>
+    <string name="txt_public">This repo is public</string>
+    <string name="txt_retry">Retry</string>
+    <string name="txt_visit_repo_website">Go to code</string>
+    <string name="txt_err_fetching_repos">There is an error fetching the repositories</string>
+    <string name="txt_empty_repos">You have no repositories yet!</string>
+</resources>
