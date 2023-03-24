@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.PublicOff
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -30,29 +28,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.githubrepoexplorer.R
-import com.example.githubrepoexplorer.ui.models.Owner
-import com.example.githubrepoexplorer.ui.models.Repository
-
-
-fun getPreviewRepoUIModel() = Repository(
-    "MyRepo",
-    "my repo full name",
-    "This is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repoThis is a beautiful repo",
-    true,
-    isPrivate = false,
-    "http://github.com/nicolashleon",
-    Owner("nicolashleon", "https://avatars.githubusercontent.com/u/15876397?v=4")
-)
+import com.example.githubrepoexplorer.ui.models.OwnerRepoTuple
 
 @Composable
-fun RepositoryItemComposablePreview(onClick: () -> Unit = {}) {
-    RepositoryItemComposable(
-        repo = getPreviewRepoUIModel(), onClick = onClick
-    )
-}
-
-@Composable
-fun RepositoryItemComposable(modifier: Modifier = Modifier, repo: Repository, onClick: () -> Unit = {}) {
+fun RepositoryItemComposable(modifier: Modifier = Modifier, repoOwnerRepoTuple: OwnerRepoTuple, onClick: () -> Unit = {}) {
     GithubRepoExplorerTheme {
         Row(
             modifier = modifier
@@ -63,7 +42,7 @@ fun RepositoryItemComposable(modifier: Modifier = Modifier, repo: Repository, on
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(repo.owner.image)
+                    .data(repoOwnerRepoTuple.ownerImage)
                     .crossfade(true)
                     .build(),
                 placeholder = null,
@@ -80,24 +59,17 @@ fun RepositoryItemComposable(modifier: Modifier = Modifier, repo: Repository, on
                 modifier = Modifier.weight(1F)
 
             ) {
-                Text(text = repo.name, style = typography.headlineSmall, modifier = Modifier.fillMaxWidth())
+                Text(text = repoOwnerRepoTuple.name, style = typography.headlineSmall, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.padding(top = 16.dp))
                 Row(verticalAlignment = CenterVertically, modifier = Modifier.fillMaxWidth()) {
                     Icon(
-                        imageVector = when (repo.visible) {
-                            true -> Icons.Default.Visibility
-                            else -> Icons.Default.VisibilityOff
-                        },
+                        imageVector = Icons.Default.Visibility,
                         contentDescription = null,
                         tint = colorResource(id = R.color.gray)
                     )
                     Text(
-                        stringResource(
-                            id = when (repo.visible) {
-                                true -> R.string.txt_visible
-                                else -> R.string.txt_hidden
-                            }
-                        ), style = typography.labelMedium.copy(color = colorResource(id = R.color.gray)),
+                        text = repoOwnerRepoTuple.visibility.displayTextResource?.let { stringResource(id = it) }.orEmpty(),
+                        style = typography.labelMedium.copy(color = colorResource(id = R.color.gray)),
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .fillMaxWidth()
@@ -106,18 +78,15 @@ fun RepositoryItemComposable(modifier: Modifier = Modifier, repo: Repository, on
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 Row(verticalAlignment = CenterVertically, modifier = Modifier.fillMaxWidth()) {
                     Icon(
-                        imageVector = when (repo.isPrivate) {
-                            true -> Icons.Default.PublicOff
-                            else -> Icons.Default.Public
-                        },
+                        imageVector = Icons.Default.Lock,
                         contentDescription = null,
                         tint = colorResource(id = R.color.gray)
                     )
                     Text(
                         stringResource(
-                            id = when (repo.isPrivate) {
-                                true -> R.string.txt_public
-                                else -> R.string.txt_private
+                            id = when (repoOwnerRepoTuple.isPrivate) {
+                                true -> R.string.txt_repo_is_private
+                                else -> R.string.txt_repo_is_public
                             }
                         ), style = typography.labelMedium.copy(color = colorResource(id = R.color.gray)),
                         modifier = Modifier

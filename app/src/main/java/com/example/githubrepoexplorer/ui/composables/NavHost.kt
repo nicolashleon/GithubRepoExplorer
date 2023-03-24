@@ -2,12 +2,12 @@ package com.example.githubrepoexplorer.ui.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
+import androidx.navigation.navArgument
 
 @Composable
 fun RepositoryExplorerNavHost(
@@ -21,15 +21,19 @@ fun RepositoryExplorerNavHost(
         startDestination = startDestination
     ) {
         composable(Destinations.REPOSITORY_LIST) {
-            RepositoryListScreen {
-                println("NAVIGATE")
-                navController.navigate(Destinations.REPOSITORY_DETAILS)
+            RepositoryListScreen { repoId ->
+                navController.navigate(Destinations.REPOSITORY_DETAILS + "/$repoId")
             }
         }
-        composable(Destinations.REPOSITORY_DETAILS) {
-            RepositoryDetailScreen({
-                navController.navigateUp()
-            })
+        composable(
+            Destinations.REPOSITORY_DETAILS + "/{repoId}",
+            arguments = listOf(navArgument("repoId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getLong("repoId")?.let {
+                RepositoryDetailScreen(it) {
+                    navController.navigateUp()
+                }
+            }
         }
     }
 }
