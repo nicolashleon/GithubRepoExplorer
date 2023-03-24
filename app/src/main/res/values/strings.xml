@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">GithubRepoExplorer</string>
+    <string name="txt_repositories">Repositories</string>
+    <string name="txt_visibility_private">This repo visibility is private</string>
+    <string name="txt_visibility_public">This repo visibility is public</string>
+    <string name="txt_visibility_internal">This repo visibility is internal</string>
+    <string name="txt_repo_is_public">This repo is publicly accessible</string>
+    <string name="txt_repo_is_private">This repo is not publicly accessible</string>
+    <string name="txt_retry">Retry</string>
+    <string name="txt_visit_repo_website">Go to code</string>
+    <string name="txt_err_fetching_repos">There is an error fetching the repositories</string>
+    <string name="txt_empty_repos">You have no repositories yet!</string>
+    <string name="txt_error_loading_repo_detail">There is an error loading this repo information</string>
+</resources>
